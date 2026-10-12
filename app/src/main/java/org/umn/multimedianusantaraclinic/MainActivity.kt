@@ -6,6 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,31 +24,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHost
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
+import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
+import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()   // From Splash Screen Package
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // Keep track of Splash Screen status
-            var isSplashScreenFinished by remember { mutableStateOf(false) }
-
-            // If Splash Screen not done, display Splash Screen
-            if(!isSplashScreenFinished) {
-                SplashScreen(onTimeout = { isSplashScreenFinished })
-            } else {
-                // Display Main Content
-                MultimediaNusantaraClinicTheme {
-                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        Greeting(
-                            name = "Android",
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                    }
+            MultimediaNusantaraClinicTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    MainAppContent(
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -49,17 +53,48 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun MainAppContent(modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate(Screen.Home.route) },
+                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
+                    label = { Text("Home") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate(Screen.Hotline.route) },
+                    icon = { Icon(Icons.Filled.Phone, contentDescription = "Hotline") },
+                    label = { Text("Hotline") }
+                )
+            }
+        }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Screen.SplashScreen.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable( Screen.SplashScreen.route ) { SplashScreen(
+                onTimeout = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
+                    }
+                }
+            ) }
+            composable( Screen.Home.route ) { HomeScreen() }
+            composable( Screen.Hotline.route ) { HotlineScreen() }
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MultimediaNusantaraClinicTheme {
-        Greeting("Android")
+        MainAppContent()
     }
 }

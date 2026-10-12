@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic
+package org.umn.multimedianusantaraclinic.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import org.umn.multimedianusantaraclinic.R
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
@@ -35,15 +36,15 @@ fun SplashScreen(onTimeout: () -> Unit) {
             painter = painterResource(id = R.drawable.mnclogosvg),
             contentDescription = "App Logo",
             modifier = Modifier
-                .size(120.dp)
+                .size(240.dp)
                 .align(Alignment.Center)
         )
 
         Text(
             text = "Multimedia Nusantara Clinic",
             color = Color.White,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.align(Alignment.Center)
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }
