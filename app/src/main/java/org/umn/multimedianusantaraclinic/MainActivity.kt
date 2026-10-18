@@ -34,6 +34,7 @@ import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +71,7 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                     icon = { Icon(Icons.Filled.Phone, contentDescription = "Hotline") },
                     label = { Text("Hotline") }
                 )
+
             }
         }
     ) { innerPadding ->
@@ -87,6 +89,7 @@ fun MainAppContent(modifier: Modifier = Modifier) {
             ) }
             composable( Screen.Home.route ) { HomeScreen() }
             composable( Screen.Hotline.route ) { HotlineScreen() }
+            composable( Screen.Login.route ) { Login() }
         }
     }
 }
