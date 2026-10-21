@@ -51,6 +51,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 
 class UserDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -231,6 +238,15 @@ fun LoginScreen(
             }
         }
     }
+
+    Box(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)){
+        Image(
+            painter = painterResource(id = R.drawable.mncloginbg),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
 
     Column(
         modifier = Modifier
@@ -426,4 +442,5 @@ fun LoginScreen(
             }
         }
     }
+}
 }
