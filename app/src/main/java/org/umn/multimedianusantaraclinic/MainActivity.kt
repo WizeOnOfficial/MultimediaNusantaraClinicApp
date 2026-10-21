@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Icon
@@ -30,6 +31,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailScreen
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
@@ -70,6 +73,12 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                     icon = { Icon(Icons.Filled.Phone, contentDescription = "Hotline") },
                     label = { Text("Hotline") }
                 )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate(Screen.Activity.route) },
+                    icon = { Icon(Icons.Filled.History, contentDescription = "Activity") },
+                    label = { Text("Activity") }
+                )
             }
         }
     ) { innerPadding ->
@@ -86,6 +95,11 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                 }
             ) }
             composable( Screen.Home.route ) { HomeScreen() }
+            composable( Screen.Activity.route ) { 
+                ActivityScreen(
+                    onItemClick = { navController.navigate(Screen.ActivityDetail.route) }
+                ) 
+            }
             composable( Screen.Hotline.route ) { HotlineScreen() }
         }
     }
