@@ -15,12 +15,16 @@ private val DarkColorScheme = darkColorScheme(
     primary = Green80,
     background = White,
     onBackground = Black,
+    surface = White,
+    onSurface = Black,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Green40,
-    background = Black,
-    onBackground = White,
+    background = White,
+    onBackground = Black,
+    surface = White,
+    onSurface = Black,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
