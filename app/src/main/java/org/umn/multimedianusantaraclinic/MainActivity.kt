@@ -16,23 +16,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
-import org.umn.multimedianusantaraclinic.data.mockActivityDetailMap
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailsScreen
 import org.umn.multimedianusantaraclinic.ui.screen.ActivityListScreen
-import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
-import org.umn.multimedianusantaraclinic.ui.screen.Login
+import org.umn.multimedianusantaraclinic.ui.screen.DashboardScreen
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +48,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainAppContent(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -88,35 +86,22 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                     }
                 }
             ) }
-            composable( Screen.Home.route ) { HomeScreen() }
             composable( Screen.ActivityList.route ) {
                 ActivityListScreen(
                     onItemClick = { activityId ->
-                        navController.navigate(Screen.ActivityDetail.createRoute(activityId)) }
-                )
-            }
-            composable( Screen.Hotline.route ) { HotlineScreen() }
-            composable( Screen.Login.route ) {
-                Login(
-                    onLoginSuccess = { userEmail ->
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
+                        navController.navigate(Screen.ActivityDetail.createRoute(activityId))
                     }
                 )
             }
-            composable(
-                route = Screen.ActivityDetail.route,
-                arguments = listOf(navArgument("activityId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val activityId = backStackEntry.arguments?.getString("activityId")
-                val detailData = mockActivityDetailMap[activityId] ?: defaultActivityDetail
-
-                ActivityDetailsScreen(
-                    data = detailData,
-                    onBackClick = { navController.popBackStack() }
+            composable(Screen.Home.route) {
+                DashboardScreen(
+                    userName = "Barbara",
+                    onNavigateToLogin = {
+                        navController.navigate(Screen.Login.route)
+                    }
                 )
             }
+            composable( Screen.Hotline.route ) { HotlineScreen() }
         }
     }
 }
