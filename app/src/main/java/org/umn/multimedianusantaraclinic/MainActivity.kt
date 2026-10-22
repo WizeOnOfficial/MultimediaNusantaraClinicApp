@@ -26,14 +26,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
 import org.umn.multimedianusantaraclinic.data.mockActivityDetailMap
-import org.umn.multimedianusantaraclinic.data.wheelchairRequestMock
 import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailsScreen
 import org.umn.multimedianusantaraclinic.ui.screen.ActivityListScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
-import androidx.navigation.compose.currentBackStackEntryAsState
+import org.umn.multimedianusantaraclinic.ui.screen.Login
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +83,7 @@ fun MainAppContent(modifier: Modifier = Modifier) {
         ) {
             composable( Screen.SplashScreen.route ) { SplashScreen(
                 onTimeout = {
-                    navController.navigate(Screen.Home.route) {
+                    navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
                 }
@@ -97,7 +96,15 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                 )
             }
             composable( Screen.Hotline.route ) { HotlineScreen() }
-            composable( Screen.Login.route ) { Login() }
+            composable( Screen.Login.route ) {
+                Login(
+                    onLoginSuccess = { userEmail ->
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
             composable(
                 route = Screen.ActivityDetail.route,
                 arguments = listOf(navArgument("activityId") { type = NavType.StringType })
