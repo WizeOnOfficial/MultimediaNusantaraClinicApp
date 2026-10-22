@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -12,24 +11,21 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavHost
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.navigation.navArgument
+import org.umn.multimedianusantaraclinic.data.mockActivityDetailMap
+import org.umn.multimedianusantaraclinic.data.wheelchairRequestMock
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailsScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
@@ -42,10 +38,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MultimediaNusantaraClinicTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainAppContent(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface {
+                     MainAppContent()
                 }
             }
         }
@@ -87,14 +81,26 @@ fun MainAppContent(modifier: Modifier = Modifier) {
             ) }
             composable( Screen.Home.route ) { HomeScreen() }
             composable( Screen.Hotline.route ) { HotlineScreen() }
+            composable(
+                route = Screen.ActivityDetail.route,
+                arguments = listOf(navArgument("argumentId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val activityId = backStackEntry.arguments?.getString("activityId")
+                val detailData = mockActivityDetailMap[activityId] ?: wheelchairRequestMock
+
+                ActivityDetailsScreen(
+                    data = detailData,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun MainAppPreview() {
     MultimediaNusantaraClinicTheme {
-        MainAppContent()
+         MainAppContent()
     }
 }
