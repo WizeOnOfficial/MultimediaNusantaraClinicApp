@@ -29,7 +29,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.White)
             .padding(24.dp)
     ) {
         Image(
@@ -42,7 +42,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
 
         Text(
             text = "Multimedia Nusantara Clinic",
-            color = Color.White,
+            color = Color.Black,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
