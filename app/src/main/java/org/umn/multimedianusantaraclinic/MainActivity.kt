@@ -33,6 +33,7 @@ import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +97,7 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                 )
             }
             composable( Screen.Hotline.route ) { HotlineScreen() }
+            composable( Screen.Login.route ) { Login() }
             composable(
                 route = Screen.ActivityDetail.route,
                 arguments = listOf(navArgument("activityId") { type = NavType.StringType })
