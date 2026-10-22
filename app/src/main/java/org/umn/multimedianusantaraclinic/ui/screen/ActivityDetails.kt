@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -28,7 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
+import org.umn.multimedianusantaraclinic.data.wheelchairRequestMock
 import org.umn.multimedianusantaraclinic.ui.component.ActivityCard
 import org.umn.multimedianusantaraclinic.ui.component.ActivityDetailHeader
 import org.umn.multimedianusantaraclinic.ui.component.BannerCard
@@ -40,6 +45,7 @@ import org.umn.multimedianusantaraclinic.ui.component.ProgressStep
 import org.umn.multimedianusantaraclinic.ui.component.ProgressTracker
 import org.umn.multimedianusantaraclinic.ui.component.TextDetailList
 import org.umn.multimedianusantaraclinic.ui.theme.Green80
+import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
 import org.umn.multimedianusantaraclinic.ui.theme.Red
 import org.umn.multimedianusantaraclinic.ui.theme.White
 import org.umn.multimedianusantaraclinic.ui.theme.Yellow
@@ -109,9 +115,16 @@ fun ActivityDetailsScreen(
                         style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Bold
                     ))},
-                navigationIcon = { Icon(Icons.Filled.ArrowBack,
-                    modifier = Modifier.padding(16.dp),
-                    contentDescription = "Back Button") }
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(start = 8.dp, end = 8.dp)
+                    ) {
+                    Icon(Icons.Filled.ArrowBack,
+                        contentDescription = "Back Button")
+                } }
             )
         },
         bottomBar = {
@@ -188,5 +201,13 @@ fun ActivityDetailsScreen(
                 ProgressTracker(steps = data.progressSteps)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ActivityPreviewA() {
+    MultimediaNusantaraClinicTheme {
+        ActivityDetailsScreen(data = wheelchairRequestMock)
     }
 }

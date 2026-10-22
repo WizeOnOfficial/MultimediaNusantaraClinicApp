@@ -23,14 +23,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailScreen
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityScreen
 import androidx.navigation.navArgument
+import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
 import org.umn.multimedianusantaraclinic.data.mockActivityDetailMap
 import org.umn.multimedianusantaraclinic.data.wheelchairRequestMock
 import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailsScreen
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityListScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
@@ -71,7 +69,7 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = { navController.navigate(Screen.Activity.route) },
+                    onClick = { navController.navigate(Screen.ActivityList.route) },
                     icon = { Icon(Icons.Filled.History, contentDescription = "Activity") },
                     label = { Text("Activity") }
                 )
@@ -91,18 +89,19 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                 }
             ) }
             composable( Screen.Home.route ) { HomeScreen() }
-            composable( Screen.Activity.route ) {
-                ActivityScreen(
-                    onItemClick = { navController.navigate(Screen.ActivityDetail.route) }
+            composable( Screen.ActivityList.route ) {
+                ActivityListScreen(
+                    onItemClick = { activityId ->
+                        navController.navigate(Screen.ActivityDetail.createRoute(activityId)) }
                 )
             }
             composable( Screen.Hotline.route ) { HotlineScreen() }
             composable(
                 route = Screen.ActivityDetail.route,
-                arguments = listOf(navArgument("argumentId") { type = NavType.StringType })
+                arguments = listOf(navArgument("activityId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val activityId = backStackEntry.arguments?.getString("activityId")
-                val detailData = mockActivityDetailMap[activityId] ?: wheelchairRequestMock
+                val detailData = mockActivityDetailMap[activityId] ?: defaultActivityDetail
 
                 ActivityDetailsScreen(
                     data = detailData,

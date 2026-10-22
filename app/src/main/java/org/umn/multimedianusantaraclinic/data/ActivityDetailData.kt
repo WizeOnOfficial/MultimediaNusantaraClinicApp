@@ -11,6 +11,29 @@ import org.umn.multimedianusantaraclinic.ui.theme.Cyan40
 import org.umn.multimedianusantaraclinic.ui.theme.Green40
 import org.umn.multimedianusantaraclinic.ui.theme.Green80
 
+val defaultActivityDetail = ActivityDetailData(
+    requestId = "ID-9999-9999",
+    title = "ERROR SOMETHING OCCURRED",
+    date = "31 Dec 2099, 23:59",
+    status = ActivityStatus.COMPLETED,
+    bannerResId = R.drawable.wheelchairbanner,
+    bannerDescription = "Wheelchair Banner",
+    bannerBgColor = Green80,
+    profileTitle = "Staff Profile",
+    profileName = "Sumthing Wong",
+    profileId = "Staff-999999",
+    profileResId = R.drawable.profilepictureplaceholder,
+    detailContent = ActivityDetailContent.TextDetails(
+        items = listOf(
+            DetailItem("Location", "C308"),
+            DetailItem("Require Assistance", "False")
+        )
+    ),
+    progressSteps = listOf(
+        ProgressStep("ERROR", Green40)
+    )
+)
+
 val wheelchairRequestMock = ActivityDetailData(
     requestId = "ID-1234-5678",
     title = "Wheelchair Request",
@@ -20,7 +43,7 @@ val wheelchairRequestMock = ActivityDetailData(
     bannerDescription = "Wheelchair Banner",
     bannerBgColor = Green80,
     profileTitle = "Staff Profile",
-    profileName = "Sera Dalton Lee",
+    profileName = "John Sera",
     profileId = "Staff-123456",
     profileResId = R.drawable.profilepictureplaceholder,
     detailContent = ActivityDetailContent.TextDetails(
@@ -44,7 +67,7 @@ val medicineRequestMock = ActivityDetailData(
     bannerDescription = "Wheelchair Banner",
     bannerBgColor = Green80,
     profileTitle = "Staff Profile",
-    profileName = "Darren Destrio",
+    profileName = "Finn Hueman",
     profileId = "Staff-654321",
     profileResId = R.drawable.profilepictureplaceholder,
     detailContent = ActivityDetailContent.ProductDetails(
