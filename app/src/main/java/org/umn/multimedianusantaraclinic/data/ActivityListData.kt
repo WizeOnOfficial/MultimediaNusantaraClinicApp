@@ -10,6 +10,9 @@ import androidx.compose.material.icons.filled.ReportProblem
 import androidx.compose.ui.graphics.Color
 import org.umn.multimedianusantaraclinic.ui.screen.ActivityCategoryTab
 import org.umn.multimedianusantaraclinic.ui.screen.ActivityItemData
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityStatus
+import org.umn.multimedianusantaraclinic.ui.theme.Green40
+import org.umn.multimedianusantaraclinic.ui.theme.Green80
 
 public val sampleActivities = listOf(
     ActivityItemData(
@@ -18,8 +21,7 @@ public val sampleActivities = listOf(
         category = ActivityCategoryTab.SERVICES,
         subCategory = "Wheelchair Service",
         description = "A staff is on their way with the wheelchair!",
-        status = "Ongoing",
-        statusColor = Color(0xFF2E7D32),
+        status = ActivityStatus.ONGOING,
         statusBgColor = Color(0xFFE8F5E9),
         lastUpdated = "14:00",
         icon = Icons.AutoMirrored.Filled.Accessible,
@@ -45,9 +47,8 @@ public val sampleActivities = listOf(
         title = "Medicine Request",
         category = ActivityCategoryTab.REQUESTS,
         subCategory = "Medicine Request",
-        description = "Paracetamol & Vitamin C package prepared by pharmacy desk",
-        status = "Completed",
-        statusColor = Color(0xFF0288D1),
+        description = "Procold Flu & Batuk And Methylprednisolone package prepared by pharmacy desk",
+        status = ActivityStatus.COMPLETED,
         statusBgColor = Color(0xFFE1F5FE),
         lastUpdated = "12:30",
         icon = Icons.Default.Medication,
@@ -55,13 +56,12 @@ public val sampleActivities = listOf(
         iconTint = Color(0xFF338111)
     ),
     ActivityItemData(
-        id = "ID-4512-3390",
+        id = "ID-4321-5678",
         title = "Clinic Tools Request",
         category = ActivityCategoryTab.REQUESTS,
         subCategory = "Clinic Tools Request",
         description = "First aid kit and BP monitor dispatched to Building C Room 308",
-        status = "Ongoing",
-        statusColor = Color(0xFF2E7D32),
+        status = ActivityStatus.ONGOING,
         statusBgColor = Color(0xFFE8F5E9),
         lastUpdated = "11:15",
         icon = Icons.Default.HomeRepairService,

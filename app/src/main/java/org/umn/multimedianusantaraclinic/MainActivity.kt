@@ -4,7 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
@@ -20,6 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,8 +34,14 @@ import org.umn.multimedianusantaraclinic.ui.screen.ActivityListScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
-import org.umn.multimedianusantaraclinic.ui.screen.DashboardScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
+import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
+import org.umn.multimedianusantaraclinic.data.mockActivityDetailMap
+import org.umn.multimedianusantaraclinic.ui.component.CustomBottomNavbar
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailsScreen
+import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
+import org.umn.multimedianusantaraclinic.ui.screen.Login
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,26 +63,34 @@ fun MainAppContent(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val topLevelRoutes = listOf(
+        Screen.Home.route,
+        Screen.ActivityList.route,
+        Screen.Hotline.route
+    )
+    val shouldShowBottomBar = currentRoute in topLevelRoutes
+
     Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
         bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate(Screen.Home.route) },
-                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
-                    label = { Text("Home") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate(Screen.Hotline.route) },
-                    icon = { Icon(Icons.Filled.Phone, contentDescription = "Hotline") },
-                    label = { Text("Hotline") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navController.navigate(Screen.ActivityList.route) },
-                    icon = { Icon(Icons.Filled.History, contentDescription = "Activity") },
-                    label = { Text("Activity") }
+            if (shouldShowBottomBar) {
+                CustomBottomNavbar(
+                    currentRoute = currentRoute,
+                    onNavigateToRoute = { targetRoute ->
+                        if (currentRoute != targetRoute) {
+                            navController.navigate(targetRoute) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    },
+                    emergencyNumber = "02154220808"
                 )
             }
         }
@@ -77,31 +98,87 @@ fun MainAppContent(modifier: Modifier = Modifier) {
         NavHost(
             navController = navController,
             startDestination = Screen.SplashScreen.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            // Global transitions for all destinations
+            enterTransition = { fadeIn(animationSpec = tween(400)) },
+            exitTransition = { fadeOut(animationSpec = tween(400)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(400)) },
+            popExitTransition = { fadeOut(animationSpec = tween(400)) }
         ) {
-            composable( Screen.SplashScreen.route ) { SplashScreen(
-                onTimeout = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
+            composable(
+                Screen.SplashScreen.route,
+                exitTransition = {
+                    fadeOut(animationSpec = tween(600))
+                }) {
+                SplashScreen(
+                    onTimeout = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.SplashScreen.route) { inclusive = true }
+                        }
                     }
-                }
-            ) }
-            composable( Screen.ActivityList.route ) {
+                )
+            }
+
+            composable(
+                Screen.Login.route,
+                enterTransition = {
+                    fadeIn(animationSpec = tween(600))
+                }) {
+                Login(
+                    onLoginSuccess = { userEmail ->
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    userName = "Barbara",
+                    onNavigateToLogin = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateToRoute = { targetRoute ->
+                        if (currentRoute != targetRoute) {
+                            navController.navigate(targetRoute) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    }
+                )
+            }
+
+            composable(Screen.ActivityList.route) {
                 ActivityListScreen(
                     onItemClick = { activityId ->
                         navController.navigate(Screen.ActivityDetail.createRoute(activityId))
                     }
                 )
             }
-            composable(Screen.Home.route) {
-                DashboardScreen(
-                    userName = "Barbara",
-                    onNavigateToLogin = {
-                        navController.navigate(Screen.Login.route)
-                    }
+
+            composable(
+                route = Screen.ActivityDetail.route,
+                arguments = listOf(navArgument("activityId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val activityId = backStackEntry.arguments?.getString("activityId")
+                val detailData = mockActivityDetailMap[activityId] ?: defaultActivityDetail
+
+                ActivityDetailsScreen(
+                    data = detailData,
+                    onBackClick = { navController.popBackStack() }
                 )
             }
-            composable( Screen.Hotline.route ) { HotlineScreen() }
+
+            composable(Screen.Hotline.route) {
+                HotlineScreen()
+            }
         }
     }
 }

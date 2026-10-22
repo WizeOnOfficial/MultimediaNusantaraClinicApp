@@ -10,6 +10,7 @@ import org.umn.multimedianusantaraclinic.ui.screen.ActivityStatus
 import org.umn.multimedianusantaraclinic.ui.theme.Cyan40
 import org.umn.multimedianusantaraclinic.ui.theme.Green40
 import org.umn.multimedianusantaraclinic.ui.theme.Green80
+import org.umn.multimedianusantaraclinic.ui.theme.Yellow
 
 val defaultActivityDetail = ActivityDetailData(
     requestId = "ID-9999-9999",
@@ -84,7 +85,32 @@ val medicineRequestMock = ActivityDetailData(
     )
 )
 
+val clinicalToolsMock = ActivityDetailData(
+    requestId = "ID-4321-5678",
+    title = "Clinic Tools Request",
+    date = "15 Oct 2026, 12:51",
+    status = ActivityStatus.ONGOING,
+    bannerResId = R.drawable.wheelchairbanner,
+    bannerDescription = "Wheelchair Banner",
+    bannerBgColor = Green80,
+    profileTitle = "PIC Profile",
+    profileName = "Mane Beta",
+    profileId = "00000112394",
+    profileResId = R.drawable.profilepictureplaceholder,
+    detailContent = ActivityDetailContent.TextDetails(
+        items = listOf(
+            DetailItem("Location", "C308"),
+            DetailItem("Require Assistance", "False")
+        )
+    ),
+    progressSteps = listOf(
+        ProgressStep("Request has been delivered!", Green40),
+        ProgressStep("Request is being reviewed", Yellow)
+    )
+)
+
 val mockActivityDetailMap = mapOf(
     "ID-1234-5678" to wheelchairRequestMock,
-    "ID-5678-1234" to medicineRequestMock
+    "ID-5678-1234" to medicineRequestMock,
+    "ID-4321-5678" to clinicalToolsMock
 )

@@ -25,36 +25,55 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.umn.multimedianusantaraclinic.Screen
+import org.umn.multimedianusantaraclinic.ui.theme.Black
+import org.umn.multimedianusantaraclinic.ui.theme.White
 
-// Native Feature: Membuka dialer telepon darurat langsung dari sistem Android
-fun triggerEmergencyCall(context: Context, phoneNumber: String = "112") {
-    val intent = Intent(Intent.ACTION_DIAL).apply {
-        data = Uri.parse("tel:$phoneNumber")
-    }
-    context.startActivity(intent)
+sealed class BottomNavItem(
+    val route: String?,
+    val title: String,
+    val icon: ImageVector
+) {
+    object Home : BottomNavItem(Screen.Home.route, "Home", Icons.Default.Home)
+    object Activity : BottomNavItem(Screen.ActivityList.route, "Activity", Icons.Default.DateRange)
+    object Profile : BottomNavItem(null, "Profile", Icons.Default.Person)
+    object Settings : BottomNavItem(null, "Settings", Icons.Default.Settings)
 }
+
+// Native Feature - Opens the phone app on user's phone. Not yet apply
+//fun triggerEmergencyCall(context: Context, phoneNumber: String = "112") {
+//    val intent = Intent(Intent.ACTION_DIAL).apply {
+//        data = Uri.parse("tel:$phoneNumber")
+//    }
+//    context.startActivity(intent)
+//}
+
 
 @Composable
 fun CustomBottomNavbar(
-    selectedTab: String = "Home",
-    onTabSelected: (String) -> Unit = {},
+    currentRoute: String?,
+    onNavigateToRoute: (String) -> Unit,
     emergencyNumber: String = "02154220808" // Hotline Klinik UMN / Darurat
 ) {
     val context = LocalContext.current
+    val raisedTonalColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+
+    val leftItems = listOf(BottomNavItem.Home, BottomNavItem.Activity)
+    val rightItems = listOf(BottomNavItem.Profile, BottomNavItem.Settings)
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(95.dp),
+            .height(96.dp)
+            .background(Black),
         contentAlignment = Alignment.BottomCenter
     ) {
-        // Kontainer putih navbar
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(68.dp)
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
-            color = Color.White,
+            color = raisedTonalColor,
             shadowElevation = 12.dp
         ) {
             Row(
@@ -64,50 +83,54 @@ fun CustomBottomNavbar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Sisi Kiri
+                // Left Tabs
                 Row(
                     modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    NavItem(
-                        icon = Icons.Default.Home,
-                        label = "Home",
-                        isSelected = selectedTab == "Home",
-                        onClick = { onTabSelected("Home") }
-                    )
-                    NavItem(
-                        icon = Icons.Default.DateRange,
-                        label = "Activity",
-                        isSelected = selectedTab == "Activity",
-                        onClick = { onTabSelected("Activity") }
-                    )
+                    leftItems.forEach { item ->
+                        NavItem(
+                            icon = item.icon,
+                            label = item.title,
+                            isSelected = currentRoute == item.route,
+                            onClick = {
+                                item.route?.let { targetRoute ->
+                                    if (currentRoute != targetRoute) {
+                                        onNavigateToRoute(targetRoute)
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
 
-                // Spacer untuk tombol Emergency di tengah
+                // Center FAB Gap
                 Spacer(modifier = Modifier.width(68.dp))
 
-                // Sisi Kanan
+                // Right Tabs
                 Row(
                     modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    NavItem(
-                        icon = Icons.Default.Person,
-                        label = "Profile",
-                        isSelected = selectedTab == "Profile",
-                        onClick = { onTabSelected("Profile") }
-                    )
-                    NavItem(
-                        icon = Icons.Default.Settings,
-                        label = "Settings",
-                        isSelected = selectedTab == "Settings",
-                        onClick = { onTabSelected("Settings") }
-                    )
+                    rightItems.forEach { item ->
+                        NavItem(
+                            icon = item.icon,
+                            label = item.title,
+                            isSelected = currentRoute == item.route,
+                            onClick = {
+                                item.route?.let { targetRoute ->
+                                    if (currentRoute != targetRoute) {
+                                        onNavigateToRoute(targetRoute)
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
 
-        // Native Emergency Floating Action Button
+        // Floating Emergency Dial Button
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -117,14 +140,14 @@ fun CustomBottomNavbar(
                 .background(Color(0xFFE53935), CircleShape)
                 .clip(CircleShape)
                 .clickable {
-                    triggerEmergencyCall(context, emergencyNumber)
+                    onNavigateToRoute(Screen.Hotline.route)
                 },
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Phone,
                 contentDescription = "Emergency Call",
-                tint = Color.White,
+                tint = White,
                 modifier = Modifier.size(30.dp)
             )
         }
@@ -138,8 +161,8 @@ private fun NavItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val activeColor = Color(0xFF2E7D32)
-    val inactiveColor = Color.Gray
+    val activeColor = MaterialTheme.colorScheme.primary
+    val inactiveColor = MaterialTheme.colorScheme.onPrimary
 
     Column(
         modifier = Modifier

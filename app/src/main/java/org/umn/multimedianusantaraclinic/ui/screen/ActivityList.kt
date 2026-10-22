@@ -74,8 +74,7 @@ data class ActivityItemData(
     val category: ActivityCategoryTab,
     val subCategory: String,
     val description: String,
-    val status: String,
-    val statusColor: Color,
+    val status: ActivityStatus,
     val statusBgColor: Color,
     val lastUpdated: String,
     val icon: ImageVector,
@@ -151,7 +150,7 @@ fun ActivityListScreen(onItemClick: (String) -> Unit = {}) {
                                 text = tab.displayName,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) Green40 else Black
+                                color = if (isSelected) Green40 else MaterialTheme.colorScheme.onPrimary
                             )
                         }
 
