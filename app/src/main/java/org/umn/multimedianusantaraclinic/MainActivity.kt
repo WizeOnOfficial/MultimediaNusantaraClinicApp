@@ -4,12 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
@@ -17,31 +13,30 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavType
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityListScreen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailScreen
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityScreen
+import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.navArgument
-import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
-import org.umn.multimedianusantaraclinic.data.mockActivityDetailMap
-import org.umn.multimedianusantaraclinic.ui.component.CustomBottomNavbar
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailsScreen
-import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
-import org.umn.multimedianusantaraclinic.ui.screen.Login
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +45,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MultimediaNusantaraClinicTheme {
-                Surface {
-                     MainAppContent()
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    MainAppContent(
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -61,36 +58,26 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainAppContent(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    val topLevelRoutes = listOf(
-        Screen.Home.route,
-        Screen.ActivityList.route,
-        Screen.Hotline.route
-    )
-    val shouldShowBottomBar = currentRoute in topLevelRoutes
-
     Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .systemBarsPadding(),
         bottomBar = {
-            if (shouldShowBottomBar) {
-                CustomBottomNavbar(
-                    currentRoute = currentRoute,
-                    onNavigateToRoute = { targetRoute ->
-                        if (currentRoute != targetRoute) {
-                            navController.navigate(targetRoute) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    },
-                    emergencyNumber = "02154220808"
+            NavigationBar {
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate(Screen.Home.route) },
+                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
+                    label = { Text("Home") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate(Screen.Hotline.route) },
+                    icon = { Icon(Icons.Filled.Phone, contentDescription = "Hotline") },
+                    label = { Text("Hotline") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate(Screen.Activity.route) },
+                    icon = { Icon(Icons.Filled.History, contentDescription = "Activity") },
+                    label = { Text("Activity") }
                 )
             }
         }
@@ -98,95 +85,30 @@ fun MainAppContent(modifier: Modifier = Modifier) {
         NavHost(
             navController = navController,
             startDestination = Screen.SplashScreen.route,
-            modifier = Modifier.padding(innerPadding),
-            // Global transitions for all destinations
-            enterTransition = { fadeIn(animationSpec = tween(400)) },
-            exitTransition = { fadeOut(animationSpec = tween(400)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(400)) },
-            popExitTransition = { fadeOut(animationSpec = tween(400)) }
+            modifier = Modifier.padding(innerPadding)
         ) {
-            composable(
-                Screen.SplashScreen.route,
-                exitTransition = {
-                    fadeOut(animationSpec = tween(600))
-                }) {
-                SplashScreen(
-                    onTimeout = {
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.SplashScreen.route) { inclusive = true }
-                        }
+            composable( Screen.SplashScreen.route ) { SplashScreen(
+                onTimeout = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
-                )
+                }
+            ) }
+            composable( Screen.Home.route ) { HomeScreen() }
+            composable( Screen.Activity.route ) { 
+                ActivityScreen(
+                    onItemClick = { navController.navigate(Screen.ActivityDetail.route) }
+                ) 
             }
-
-            composable(
-                Screen.Login.route,
-                enterTransition = {
-                    fadeIn(animationSpec = tween(600))
-                }) {
-                Login(
-                    onLoginSuccess = { userEmail ->
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
-                    }
-                )
-            }
-
-            composable(Screen.Home.route) {
-                HomeScreen(
-                    userName = "Barbara",
-                    onNavigateToLogin = {
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Home.route) { inclusive = true }
-                        }
-                    },
-                    onNavigateToRoute = { targetRoute ->
-                        if (currentRoute != targetRoute) {
-                            navController.navigate(targetRoute) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    }
-                )
-            }
-
-            composable(Screen.ActivityList.route) {
-                ActivityListScreen(
-                    onItemClick = { activityId ->
-                        navController.navigate(Screen.ActivityDetail.createRoute(activityId))
-                    }
-                )
-            }
-
-            composable(
-                route = Screen.ActivityDetail.route,
-                arguments = listOf(navArgument("activityId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val activityId = backStackEntry.arguments?.getString("activityId")
-                val detailData = mockActivityDetailMap[activityId] ?: defaultActivityDetail
-
-                ActivityDetailsScreen(
-                    data = detailData,
-                    onBackClick = { navController.popBackStack() }
-                )
-            }
-
-            composable(Screen.Hotline.route) {
-                HotlineScreen()
-            }
+            composable( Screen.Hotline.route ) { HotlineScreen() }
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun MainAppPreview() {
+fun GreetingPreview() {
     MultimediaNusantaraClinicTheme {
-         MainAppContent()
+        MainAppContent()
     }
 }
