@@ -1,5 +1,6 @@
 package org.umn.multimedianusantaraclinic
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,41 +11,37 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityListScreen
-import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
-import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
-import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
 import org.umn.multimedianusantaraclinic.data.mockActivityDetailMap
+import org.umn.multimedianusantaraclinic.notification.ClinicNotificationHelper
 import org.umn.multimedianusantaraclinic.ui.component.CustomBottomNavbar
 import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailsScreen
+import org.umn.multimedianusantaraclinic.ui.screen.ActivityListScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
+import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.Login
 import org.umn.multimedianusantaraclinic.ui.screen.ProfileScreen
 import org.umn.multimedianusantaraclinic.ui.screen.SettingsScreen
-import org.umn.multimedianusantaraclinic.notification.ClinicNotificationHelper
+import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
+import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +52,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MultimediaNusantaraClinicTheme {
                 Surface {
-                     MainAppContent()
+                    MainAppContent()
                 }
             }
         }
@@ -67,6 +64,15 @@ fun MainAppContent(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val context = LocalContext.current
+    var profileImageUri by remember {
+        mutableStateOf<Uri?>(
+            context.filesDir.listFiles()
+                ?.firstOrNull { it.name.startsWith("profile_picture_") }
+                ?.let { Uri.fromFile(it) }
+        )
+    }
 
     val topLevelRoutes = listOf(
         Screen.Home.route,
@@ -115,7 +121,8 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                 Screen.SplashScreen.route,
                 exitTransition = {
                     fadeOut(animationSpec = tween(600))
-                }) {
+                }
+            ) {
                 SplashScreen(
                     onTimeout = {
                         navController.navigate(Screen.Login.route) {
@@ -129,7 +136,8 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                 Screen.Login.route,
                 enterTransition = {
                     fadeIn(animationSpec = tween(600))
-                }) {
+                }
+            ) {
                 Login(
                     onLoginSuccess = { userEmail ->
                         navController.navigate(Screen.Home.route) {
@@ -142,6 +150,7 @@ fun MainAppContent(modifier: Modifier = Modifier) {
             composable(Screen.Home.route) {
                 HomeScreen(
                     userName = "Barbara",
+                    profileImageUri = profileImageUri,
                     onNavigateToLogin = {
                         navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Home.route) { inclusive = true }
@@ -185,9 +194,14 @@ fun MainAppContent(modifier: Modifier = Modifier) {
             composable(Screen.Hotline.route) {
                 HotlineScreen()
             }
+
             composable(Screen.Profile.route) {
                 ProfileScreen(
                     userName = "Barbara",
+                    profileImageUri = profileImageUri,
+                    onProfileImageChange = { newUri ->
+                        profileImageUri = newUri
+                    },
                     onNavigateToSettings = {
                         navController.navigate(Screen.Settings.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
@@ -240,6 +254,6 @@ fun MainAppContent(modifier: Modifier = Modifier) {
 @Composable
 fun MainAppPreview() {
     MultimediaNusantaraClinicTheme {
-         MainAppContent()
+        MainAppContent()
     }
 }

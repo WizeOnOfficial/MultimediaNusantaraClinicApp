@@ -1,5 +1,6 @@
 package org.umn.multimedianusantaraclinic.ui.screen
 
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +31,8 @@ import coil.compose.rememberAsyncImagePainter
 import org.umn.multimedianusantaraclinic.ui.component.ProfileCard
 import org.umn.multimedianusantaraclinic.ui.theme.Green40
 import org.umn.multimedianusantaraclinic.ui.theme.Red
+import java.io.File
+import java.io.FileOutputStream
 
 @Composable
 fun ProfileScreen(
@@ -38,24 +42,28 @@ fun ProfileScreen(
     bloodType: String = "O+",
     allergies: String = "None",
     emergencyContact: String = "+62 812-3456-7890",
+    profileImageUri: Uri? = null,
+    onProfileImageChange: (Uri?) -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
     var showPhotoDialog by remember { mutableStateOf(false) }
 
-    // Launcher untuk membuka galeri HP
+    // Launcher galeri: langsung salin foto ke penyimpanan internal agar permanen
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
-            selectedImageUri = uri
+            val savedUri = saveImageToInternalStorage(context, uri)
+            if (savedUri != null) {
+                onProfileImageChange(savedUri)
+            }
         }
     }
 
-    // Gunakan gambar dari galeri jika sudah dipilih, jika belum pakai ikon default
-    val profilePainter = if (selectedImageUri != null) {
-        rememberAsyncImagePainter(model = selectedImageUri)
+    val profilePainter = if (profileImageUri != null) {
+        rememberAsyncImagePainter(model = profileImageUri)
     } else {
         rememberVectorPainter(Icons.Default.AccountCircle)
     }
@@ -91,7 +99,7 @@ fun ProfileScreen(
                     )
                 }
 
-                // Kartu Profil dengan klik untuk lihat/ganti foto
+                // Kartu Profil
                 item {
                     ProfileCard(
                         title = "UMN Clinic Patient Card",
@@ -250,6 +258,30 @@ fun ProfileScreen(
                 }
             )
         }
+    }
+}
+
+// Menyalin gambar ke penyimpanan internal aplikasi agar tidak hilang saat pindah layar / tutup aplikasi
+private fun saveImageToInternalStorage(context: Context, uri: Uri): Uri? {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val file = File(context.filesDir, "profile_picture_${System.currentTimeMillis()}.jpg")
+
+        // Hapus file foto profil lama agar penyimpanan tidak menumpuk
+        context.filesDir.listFiles()?.forEach { existingFile ->
+            if (existingFile.name.startsWith("profile_picture_")) {
+                existingFile.delete()
+            }
+        }
+
+        FileOutputStream(file).use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+        inputStream.close()
+        Uri.fromFile(file)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
 }
 
