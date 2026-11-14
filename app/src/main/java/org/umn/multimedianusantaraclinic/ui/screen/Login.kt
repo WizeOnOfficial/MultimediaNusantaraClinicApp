@@ -1,6 +1,8 @@
 package org.umn.multimedianusantaraclinic.ui.screen
 
 import android.util.Patterns
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +19,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,32 +39,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import org.umn.multimedianusantaraclinic.R
+import org.umn.multimedianusantaraclinic.data.UserDatabaseHelper
 import org.umn.multimedianusantaraclinic.ui.theme.Cyan40
-
-private const val HARDCODED_EMAIL = "admin@gmail.com"
-private const val HARDCODED_PASSWORD = "123456"
 
 @Preview
 @Composable
@@ -77,16 +75,16 @@ fun LoginScreen(
     onSignUpClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
 ) {
-    var isSignUpMode by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
+    val dbHelper = remember(context) { UserDatabaseHelper(context) }
+
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var confirmPassword by rememberSaveable { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
-    fun processAuth() {
+    fun processLogin() {
         emailError = null
         passwordError = null
 
@@ -111,17 +109,10 @@ fun LoginScreen(
             }
         }
 
-        if (isSignUpMode) {
-            // Placeholder sign up action
-            isSignUpMode = false
-            password = ""
-            confirmPassword = ""
+        if (dbHelper.checkUser(trimmedEmail, password)) {
+            onLoginSuccess(trimmedEmail)
         } else {
-            if (trimmedEmail.equals(HARDCODED_EMAIL, ignoreCase = true) && password == HARDCODED_PASSWORD) {
-                onLoginSuccess(trimmedEmail)
-            } else {
-                emailError = "Email or password incorrect. Please try again"
-            }
+            emailError = "Email or password incorrect. Please try again"
         }
     }
 
@@ -160,7 +151,7 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (isSignUpMode) "Sign Up" else "Login",
+                        text = "Login",
                         fontSize = 24.sp,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
@@ -168,26 +159,20 @@ fun LoginScreen(
                     )
 
                     HorizontalDivider(modifier = Modifier.padding(top = 12.dp))
-
                     Row(
                         modifier = Modifier.padding(top = 16.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = if (isSignUpMode) "Already have an account? " else "Don't have an account? ",
+                            text = "Don't have an account? ",
                             fontSize = 14.sp
                         )
                         Text(
-                            text = if (isSignUpMode) "Sign In" else "Sign Up",
+                            text = "Sign Up",
                             fontSize = 14.sp,
                             color = Cyan40,
                             textDecoration = TextDecoration.Underline,
-                            modifier = Modifier.clickable {
-                                isSignUpMode = !isSignUpMode
-                                emailError = null
-                                passwordError = null
-                                if (!isSignUpMode) onSignUpClick()
-                            }
+                            modifier = Modifier.clickable { onSignUpClick() }
                         )
                     }
 
@@ -212,6 +197,7 @@ fun LoginScreen(
                             .padding(top = 16.dp)
                     )
 
+                    // Password Field
                     OutlinedTextField(
                         value = password,
                         onValueChange = {
@@ -224,7 +210,7 @@ fun LoginScreen(
                         supportingText = { passwordError?.let { Text(it) } },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
-                            imeAction = if (isSignUpMode) ImeAction.Next else ImeAction.Done
+                            imeAction = ImeAction.Done
                         ),
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -241,49 +227,20 @@ fun LoginScreen(
                             .padding(top = 8.dp)
                     )
 
-                    // Confirm Password (Sign Up Placeholder) with Eye Toggle Icon
-                    if (isSignUpMode) {
-                        OutlinedTextField(
-                            value = confirmPassword,
-                            onValueChange = { confirmPassword = it },
-                            label = { Text("Confirm Password") },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Password,
-                                imeAction = ImeAction.Done
-                            ),
-                            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            trailingIcon = {
-                                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                                    Icon(
-                                        imageVector = if (confirmPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                                        contentDescription = "Toggle confirm password visibility"
-                                    )
-                                }
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp)
-                        )
-                    }
-
-                    if (!isSignUpMode) {
-                        Text(
-                            text = "Forgot Password?",
-                            fontSize = 14.sp,
-                            textDecoration = TextDecoration.Underline,
-                            modifier = Modifier
-                                .padding(top = 8.dp)
-                                .clickable { onForgotPasswordClick() },
-                            color = Cyan40
-                        )
-                    }
+                    Text(
+                        text = "Forgot Password?",
+                        fontSize = 14.sp,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clickable { onForgotPasswordClick() },
+                        color = Cyan40
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        onClick = { processAuth() },
+                        onClick = { processLogin() },
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -292,8 +249,10 @@ fun LoginScreen(
                             containerColor = MaterialTheme.colorScheme.primary
                         )
                     ) {
-                        Text(if (isSignUpMode) "REGISTER" else "LOGIN",
-                            color = MaterialTheme.colorScheme.onPrimary)
+                        Text(
+                            text = "LOGIN",
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
                     }
                 }
             }

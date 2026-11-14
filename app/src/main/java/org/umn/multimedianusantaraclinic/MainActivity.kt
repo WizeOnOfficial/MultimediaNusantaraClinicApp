@@ -42,6 +42,7 @@ import org.umn.multimedianusantaraclinic.ui.component.CustomBottomNavbar
 import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailsScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.Login
+import org.umn.multimedianusantaraclinic.ui.screen.SignUpScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,7 +130,17 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
-                    }
+                    },
+                    onSignUpClick = { navController.navigate(Screen.SignUp.route) }
+                )
+            }
+            composable(
+                Screen.SignUp.route, enterTransition = {
+                    fadeIn(animationSpec = tween(600))
+                }) {
+                SignUpScreen(
+                    onSignUpSuccess = { navController.popBackStack() },
+                    onBackToLoginClick = { navController.popBackStack() }
                 )
             }
 
