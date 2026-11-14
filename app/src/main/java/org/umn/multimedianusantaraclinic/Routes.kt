@@ -2,6 +2,7 @@ package org.umn.multimedianusantaraclinic
 
 sealed class Screen(val route: String, val title: String) {
     object SplashScreen : Screen("splashScreen", "Splash Screen")
+    object Introduction : Screen("introduction", "Introduction")
     object Home : Screen("home", "Home")
     object Login : Screen("login", "Login")
     object Hotline : Screen("hotline", "Hotline")
