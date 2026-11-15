@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,13 +33,13 @@ import org.umn.multimedianusantaraclinic.ui.screen.ActivityListScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.IntroductionScreen
-import org.umn.multimedianusantaraclinic.ui.screen.SplashScreen
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        installSplashScreen()
         setContent {
             MultimediaNusantaraClinicTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -107,17 +108,9 @@ fun MainAppContent(modifier: Modifier = Modifier) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.SplashScreen.route,
+            startDestination = Screen.Introduction.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            // Intro of the App
-            composable( Screen.SplashScreen.route ) { SplashScreen(
-                onTimeout = {
-                    navController.navigate(Screen.Introduction.route) {
-                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
-                    }
-                }
-            ) }
             // Proceeds to Introduction.kt
             composable( Screen.Introduction.route ) {
                 IntroductionScreen(
