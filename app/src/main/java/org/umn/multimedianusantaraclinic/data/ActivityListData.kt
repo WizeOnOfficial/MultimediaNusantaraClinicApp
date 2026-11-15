@@ -2,17 +2,12 @@ package org.umn.multimedianusantaraclinic.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Accessible
-import androidx.compose.material.icons.filled.AssignmentLate
-import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.HomeRepairService
 import androidx.compose.material.icons.filled.Medication
-import androidx.compose.material.icons.filled.ReportProblem
 import androidx.compose.ui.graphics.Color
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityCategoryTab
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityItemData
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityStatus
-import org.umn.multimedianusantaraclinic.ui.theme.Green40
-import org.umn.multimedianusantaraclinic.ui.theme.Green80
+import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityCategoryTab
+import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityItemData
+import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityStatus
 
 public val sampleActivities = listOf(
     ActivityItemData(

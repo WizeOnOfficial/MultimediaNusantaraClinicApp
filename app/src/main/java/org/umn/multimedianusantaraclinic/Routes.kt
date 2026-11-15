@@ -1,7 +1,6 @@
 package org.umn.multimedianusantaraclinic
 
 sealed class Screen(val route: String, val title: String) {
-    object SplashScreen : Screen("splashScreen", "Splash Screen")
     object Introduction : Screen("introduction", "Introduction")
     object Home : Screen("home", "Home")
     object Login : Screen("login", "Login")
@@ -12,4 +11,11 @@ sealed class Screen(val route: String, val title: String) {
     object ActivityDetail : Screen("activity_detail/{activityId}", "Activity Detail") {
         fun createRoute(activityId: String) = "activity_detail/$activityId"
     }
+}
+
+sealed class Graph(val route: String) {
+    object Root : Graph("root_graph")
+    object Auth : Graph("auth_graph")
+    object Home : Graph("home_graph")
+    object Activity : Graph("auth_activity")
 }

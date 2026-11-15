@@ -1,11 +1,12 @@
-package org.umn.multimedianusantaraclinic.ui.component
+package org.umn.multimedianusantaraclinic.ui.component.activity
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -19,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 
 @Composable
 fun ProfileCard(
@@ -58,7 +58,10 @@ fun ProfileCard(
                 )
 
                 Column(
-                    horizontalAlignment = Alignment.End
+                    modifier = Modifier
+                        .height(48.dp),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Text(
                         text = name,

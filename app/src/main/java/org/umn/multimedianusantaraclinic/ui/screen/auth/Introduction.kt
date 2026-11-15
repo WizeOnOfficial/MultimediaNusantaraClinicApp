@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.screen
+package org.umn.multimedianusantaraclinic.ui.screen.auth
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
@@ -29,13 +30,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import org.umn.multimedianusantaraclinic.Screen
 import org.umn.multimedianusantaraclinic.ui.theme.Black
 import org.umn.multimedianusantaraclinic.ui.theme.Gray
 import org.umn.multimedianusantaraclinic.ui.theme.Green40
@@ -83,8 +82,10 @@ fun IntroductionScreen(onFinished: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .padding(24.dp),
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(24.dp)
+            .navigationBarsPadding(),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(32.dp))
@@ -107,7 +108,7 @@ fun IntroductionScreen(onFinished: () -> Unit) {
                     text = page.title,
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
-                    color = Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 32.sp
                 )
 
@@ -116,9 +117,10 @@ fun IntroductionScreen(onFinished: () -> Unit) {
                 Text(
                     text = page.description,
                     style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.height(72.dp),
                     color = Gray,
                     fontSize = 16.sp,
-                    lineHeight = 22.sp
+                    lineHeight = 22.sp,
                 )
 
                 Spacer(modifier = Modifier.height(36.dp))
@@ -129,7 +131,7 @@ fun IntroductionScreen(onFinished: () -> Unit) {
                         .fillMaxWidth()
                         .height(320.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFF3C3C3C)),
+                        .background(MaterialTheme.colorScheme.onSurface),
                     contentAlignment = Alignment.Center
                 ) {
                     // Empty placeholder
@@ -137,7 +139,7 @@ fun IntroductionScreen(onFinished: () -> Unit) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Page Indicator Dots
         Row(
@@ -151,7 +153,7 @@ fun IntroductionScreen(onFinished: () -> Unit) {
                         .width(if (isSelected) 24.dp else 8.dp)
                         .height(8.dp)
                         .clip(RoundedCornerShape(4.dp))
-                        .background(if (isSelected) Black else Gray.copy(alpha = 0.5f))
+                        .background(if (isSelected) MaterialTheme.colorScheme.onSurface else Gray.copy(alpha = 0.5f))
                 )
             }
         }
@@ -166,7 +168,7 @@ fun IntroductionScreen(onFinished: () -> Unit) {
                     permissionLauncher.launch(
                         arrayOf(
                             Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
                         )
                     )
                 } else if (pagerState.currentPage < pages.size - 1) {
@@ -191,18 +193,16 @@ fun IntroductionScreen(onFinished: () -> Unit) {
                     text = pages[pagerState.currentPage].buttonText,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = "Next",
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

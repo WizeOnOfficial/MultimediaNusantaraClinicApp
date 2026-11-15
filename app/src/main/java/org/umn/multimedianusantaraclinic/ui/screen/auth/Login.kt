@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.screen
+package org.umn.multimedianusantaraclinic.ui.screen.auth
 
 import android.util.Patterns
 import androidx.compose.foundation.clickable
@@ -41,7 +41,6 @@ import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,7 +58,7 @@ private const val HARDCODED_PASSWORD = "123456"
 
 @Preview
 @Composable
-fun Login(
+fun LoginPreview(
     onLoginSuccess: (String) -> Unit = {},
     onSignUpClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
@@ -156,7 +155,7 @@ fun LoginScreen(
                     modifier = Modifier
                         .navigationBarsPadding()
                         .verticalScroll(rememberScrollState())
-                        .padding(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 32.dp),
+                        .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(

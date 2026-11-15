@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.component
+package org.umn.multimedianusantaraclinic.ui.component.activity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

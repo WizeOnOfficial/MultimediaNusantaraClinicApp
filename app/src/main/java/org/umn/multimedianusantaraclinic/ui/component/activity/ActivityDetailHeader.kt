@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.component
+package org.umn.multimedianusantaraclinic.ui.component.activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,21 +7,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityStatus
-import org.umn.multimedianusantaraclinic.ui.screen.color
-import org.umn.multimedianusantaraclinic.ui.screen.displayText
-import org.umn.multimedianusantaraclinic.ui.theme.Yellow
+import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityStatus
+import org.umn.multimedianusantaraclinic.ui.screen.activity.color
+import org.umn.multimedianusantaraclinic.ui.screen.activity.displayText
 
 @Composable
 fun ActivityDetailHeader(

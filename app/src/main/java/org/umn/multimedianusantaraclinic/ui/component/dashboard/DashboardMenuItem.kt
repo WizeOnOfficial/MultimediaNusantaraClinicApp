@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.component
+package org.umn.multimedianusantaraclinic.ui.component.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,12 +17,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.umn.multimedianusantaraclinic.ui.screen.MenuItemData
+import org.umn.multimedianusantaraclinic.ui.screen.DashboardItemData
 import org.umn.multimedianusantaraclinic.ui.theme.Black
+import org.umn.multimedianusantaraclinic.ui.theme.Gray
 
 @Composable
-fun HomeMenuItem(
-    data: MenuItemData,
+fun DashboardMenuItem(
+    data: DashboardItemData,
     onClick: () -> Unit = {}
 ) {
     Column(
@@ -30,15 +32,15 @@ fun HomeMenuItem(
     ) {
         Box(
             modifier = Modifier
-                .size(62.dp)
+                .size(64.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color(0xFFD9D9D9))
+                .background(Gray)
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = data.title,
-            fontSize = 12.sp,
-            color = Black
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
