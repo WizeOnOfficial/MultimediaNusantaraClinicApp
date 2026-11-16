@@ -1,0 +1,446 @@
+package org.umn.multimedianusantaraclinic.ui.screen
+
+import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.launch
+import org.umn.multimedianusantaraclinic.ui.component.dashboard.DashboardProfileCard
+import org.umn.multimedianusantaraclinic.ui.theme.Green40
+import org.umn.multimedianusantaraclinic.ui.theme.Red
+import java.io.File
+import java.io.FileOutputStream
+
+@Composable
+fun ProfileScreen(
+    userName: String = "Barbara",
+    userId: String = "NIM: 00000012345",
+    email: String = "barbara@student.umn.ac.id",
+    bloodType: String = "O+",
+    allergies: String = "None",
+    emergencyContact: String = "+62 812-3456-7890",
+    profileImageUri: Uri? = null,
+    onProfileImageChange: (Uri?) -> Unit = {},
+    onNavigateToSettings: () -> Unit = {},
+    onLogout: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    // Baca data medis tersimpan dari SharedPreferences (jika pernah diedit)
+    val prefs = remember { context.getSharedPreferences("umn_clinic_profile", Context.MODE_PRIVATE) }
+    var currentBloodType by remember { mutableStateOf(prefs.getString("blood_type", bloodType) ?: bloodType) }
+    var currentAllergies by remember { mutableStateOf(prefs.getString("allergies", allergies) ?: allergies) }
+    var currentEmergencyContact by remember { mutableStateOf(prefs.getString("emergency_contact", emergencyContact) ?: emergencyContact) }
+
+    var showPhotoDialog by remember { mutableStateOf(false) }
+    var showEditMedicalDialog by remember { mutableStateOf(false) }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            val savedUri = saveImageToInternalStorage(context, uri)
+            if (savedUri != null) {
+                onProfileImageChange(savedUri)
+                showPhotoDialog = false
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar("Profile picture updated")
+                }
+            }
+        }
+    }
+
+    val profilePainter = if (profileImageUri != null) {
+        rememberAsyncImagePainter(model = profileImageUri)
+    } else {
+        rememberVectorPainter(Icons.Default.AccountCircle)
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Dekorasi lingkaran hijau
+            Box(
+                modifier = Modifier
+                    .size(160.dp)
+                    .offset(x = 60.dp, y = (-40).dp)
+                    .background(Color(0xFF2E7D32), CircleShape)
+                    .align(Alignment.TopEnd)
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                // Header Title
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "My Profile",
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1B5E20)
+                    )
+                }
+
+                // Kartu Profil
+                item {
+                    DashboardProfileCard(
+                        title = "UMN Clinic Patient Card",
+                        name = userName,
+                        userId = userId,
+                        imagePainter = profilePainter,
+                        onImageClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            showPhotoDialog = true
+                        }
+                    )
+                }
+
+                // Informasi Medis + Tombol Edit
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Medical Information",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        TextButton(
+                            onClick = { showEditMedicalDialog = true },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Medical Info",
+                                tint = Green40,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Edit",
+                                color = Green40,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 13.sp
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            ProfileInfoRow(
+                                icon = Icons.Default.Email,
+                                label = "Campus Email",
+                                value = email
+                            )
+                            HorizontalDivider()
+                            ProfileInfoRow(
+                                icon = Icons.Default.Bloodtype,
+                                label = "Blood Type",
+                                value = currentBloodType
+                            )
+                            HorizontalDivider()
+                            ProfileInfoRow(
+                                icon = Icons.Default.WarningAmber,
+                                label = "Allergies",
+                                value = currentAllergies
+                            )
+                            HorizontalDivider()
+                            ProfileInfoRow(
+                                icon = Icons.Default.ContactPhone,
+                                label = "Emergency Contact",
+                                value = currentEmergencyContact
+                            )
+                        }
+                    }
+                }
+
+                // Tombol Aksi
+                item {
+                    OutlinedButton(
+                        onClick = onNavigateToSettings,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Account Settings")
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Button(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onLogout()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Red,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "Log Out",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Log Out")
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+            }
+        }
+
+        // Dialog Pratinjau & Ganti Foto Profil
+        if (showPhotoDialog) {
+            AlertDialog(
+                onDismissRequest = { showPhotoDialog = false },
+                title = {
+                    Text(
+                        text = "Profile Picture",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Image(
+                            painter = profilePainter,
+                            contentDescription = "Full Profile Picture",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(180.dp)
+                                .clip(CircleShape)
+                        )
+                        Text(
+                            text = userName,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            photoPickerLauncher.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Green40,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PhotoLibrary,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Change Photo")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showPhotoDialog = false }) {
+                        Text("Close")
+                    }
+                }
+            )
+        }
+
+        // Dialog Edit Medical Information
+        if (showEditMedicalDialog) {
+            var tempBloodType by remember { mutableStateOf(currentBloodType) }
+            var tempAllergies by remember { mutableStateOf(currentAllergies) }
+            var tempEmergency by remember { mutableStateOf(currentEmergencyContact) }
+
+            AlertDialog(
+                onDismissRequest = { showEditMedicalDialog = false },
+                title = {
+                    Text(
+                        text = "Edit Medical Info",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        OutlinedTextField(
+                            value = tempBloodType,
+                            onValueChange = { tempBloodType = it },
+                            label = { Text("Blood Type") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        OutlinedTextField(
+                            value = tempAllergies,
+                            onValueChange = { tempAllergies = it },
+                            label = { Text("Allergies") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        OutlinedTextField(
+                            value = tempEmergency,
+                            onValueChange = { tempEmergency = it },
+                            label = { Text("Emergency Contact") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            currentBloodType = tempBloodType.ifBlank { "-" }
+                            currentAllergies = tempAllergies.ifBlank { "None" }
+                            currentEmergencyContact = tempEmergency.ifBlank { "-" }
+
+                            prefs.edit()
+                                .putString("blood_type", currentBloodType)
+                                .putString("allergies", currentAllergies)
+                                .putString("emergency_contact", currentEmergencyContact)
+                                .apply()
+
+                            showEditMedicalDialog = false
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Medical information saved")
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Green40,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Save")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showEditMedicalDialog = false }) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
+    }
+}
+
+private fun saveImageToInternalStorage(context: Context, uri: Uri): Uri? {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val file = File(context.filesDir, "profile_picture_${System.currentTimeMillis()}.jpg")
+
+        context.filesDir.listFiles()?.forEach { existingFile ->
+            if (existingFile.name.startsWith("profile_picture_")) {
+                existingFile.delete()
+            }
+        }
+
+        FileOutputStream(file).use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+        inputStream.close()
+        Uri.fromFile(file)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+@Composable
+private fun ProfileInfoRow(
+    icon: ImageVector,
+    label: String,
+    value: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = Green40,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(14.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f)
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
