@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,8 +28,7 @@ import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.auth.IntroductionScreen
 import org.umn.multimedianusantaraclinic.ui.screen.graph.RootNavigationGraph
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
-import org.umn.multimedianusantaraclinic.ui.screen.Login
-import org.umn.multimedianusantaraclinic.ui.screen.SignUpScreen
+import org.umn.multimedianusantaraclinic.ui.screen.auth.SignUpScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +70,7 @@ fun MainAppContent(modifier: Modifier = Modifier) {
                             popUpTo(Screen.Introduction.route) { inclusive = true }
                         }
                     },
-                    onSignUpClick = { navController.navigate(Screen.SignUp.route) }
+//                    onSignUpClick = { navController.navigate(Screen.SignUp.route) }
                 )
             }
             composable(

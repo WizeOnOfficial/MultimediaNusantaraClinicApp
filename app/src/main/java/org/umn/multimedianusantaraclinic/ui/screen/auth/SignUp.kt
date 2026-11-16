@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.screen
+package org.umn.multimedianusantaraclinic.ui.screen.auth
 
 import android.util.Patterns
 import android.widget.Toast
