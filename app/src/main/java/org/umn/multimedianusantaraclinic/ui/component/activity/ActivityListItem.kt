@@ -118,7 +118,6 @@ fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
                         text = "${data.id} • ${data.subCategory}",
                         style = MaterialTheme.typography.labelMedium,
                         color = Gray,
-                        fontSize = 11.sp
                     )
                 }
             }
@@ -160,7 +159,6 @@ fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
                         text = "Last updated",
                         style = MaterialTheme.typography.labelSmall,
                         color = Gray,
-                        fontSize = 11.sp
                     )
                 }
 
@@ -169,7 +167,6 @@ fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 11.sp
                 )
             }
         }

@@ -160,7 +160,6 @@ fun LoginScreen(
                 ) {
                     Text(
                         text = if (isSignUpMode) "Sign Up" else "Login",
-                        fontSize = 24.sp,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -174,11 +173,11 @@ fun LoginScreen(
                     ) {
                         Text(
                             text = if (isSignUpMode) "Already have an account? " else "Don't have an account? ",
-                            fontSize = 14.sp
+                            style = MaterialTheme.typography.labelLarge
                         )
                         Text(
                             text = if (isSignUpMode) "Sign In" else "Sign Up",
-                            fontSize = 14.sp,
+                            style = MaterialTheme.typography.labelLarge,
                             color = Cyan40,
                             textDecoration = TextDecoration.Underline,
                             modifier = Modifier.clickable {
@@ -270,7 +269,7 @@ fun LoginScreen(
                     if (!isSignUpMode) {
                         Text(
                             text = "Forgot Password?",
-                            fontSize = 14.sp,
+                            style = MaterialTheme.typography.labelLarge,
                             textDecoration = TextDecoration.Underline,
                             modifier = Modifier
                                 .padding(top = 8.dp)

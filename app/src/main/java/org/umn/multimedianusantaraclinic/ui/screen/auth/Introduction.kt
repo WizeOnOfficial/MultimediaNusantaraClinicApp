@@ -109,7 +109,6 @@ fun IntroductionScreen(onFinished: () -> Unit) {
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 32.sp
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -119,7 +118,6 @@ fun IntroductionScreen(onFinished: () -> Unit) {
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.height(72.dp),
                     color = Gray,
-                    fontSize = 16.sp,
                     lineHeight = 22.sp,
                 )
 
