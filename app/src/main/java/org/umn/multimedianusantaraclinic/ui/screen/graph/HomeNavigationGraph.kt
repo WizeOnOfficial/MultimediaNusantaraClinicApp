@@ -2,7 +2,6 @@ package org.umn.multimedianusantaraclinic.ui.screen.graph
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,10 +11,8 @@ import okhttp3.Route
 import org.umn.multimedianusantaraclinic.Graph
 import org.umn.multimedianusantaraclinic.Screen
 import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
-import org.umn.multimedianusantaraclinic.data.getHighlightById
 import org.umn.multimedianusantaraclinic.data.mockActivityDetailMap
 import org.umn.multimedianusantaraclinic.ui.screen.DashboardScreen
-import org.umn.multimedianusantaraclinic.ui.screen.HighlightDetailScreen
 import org.umn.multimedianusantaraclinic.ui.screen.HotlineScreen
 import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityDetailsScreen
 import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityListScreen
@@ -51,28 +48,6 @@ fun HomeNavigationGraph(
             ActivityDetailsScreen(
                 data = detailData,
                 onBackClick = { navController.popBackStack() }
-            )
-        }
-
-        composable(
-            route = Screen.HighlightDetail.route,
-            arguments = listOf(navArgument("highlightId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val highlightId = backStackEntry.arguments?.getString("highlightId")
-            val highlightItem = getHighlightById(highlightId)
-
-            HighlightDetailScreen(
-                item = highlightItem,
-                onBackClick = { navController.popBackStack() },
-                onContactClinicClick = {
-                    navController.navigate(Screen.Hotline.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
             )
         }
 

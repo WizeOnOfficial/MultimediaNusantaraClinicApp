@@ -34,13 +34,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.umn.multimedianusantaraclinic.data.wheelchairRequestMock
-import org.umn.multimedianusantaraclinic.ui.component.BannerCard
 import org.umn.multimedianusantaraclinic.ui.component.activity.ActivityCard
 import org.umn.multimedianusantaraclinic.ui.component.activity.ActivityDetailHeader
+import org.umn.multimedianusantaraclinic.ui.component.activity.BannerCard
 import org.umn.multimedianusantaraclinic.ui.component.activity.DetailItem
 import org.umn.multimedianusantaraclinic.ui.component.activity.ProductDetailList
 import org.umn.multimedianusantaraclinic.ui.component.activity.ProductItem
-import org.umn.multimedianusantaraclinic.ui.component.activity.ActivityProfileCard
+import org.umn.multimedianusantaraclinic.ui.component.activity.ProfileCard
 import org.umn.multimedianusantaraclinic.ui.component.activity.ProgressStep
 import org.umn.multimedianusantaraclinic.ui.component.activity.ProgressTracker
 import org.umn.multimedianusantaraclinic.ui.component.activity.TextDetailList
@@ -181,7 +181,7 @@ fun ActivityDetailsScreen(
                 modifier = Modifier,
                 backgroundColor = data.bannerBgColor
             )
-            ActivityProfileCard(
+            ProfileCard(
                 title = data.profileTitle,
                 name = data.profileName,
                 userId = data.profileId,

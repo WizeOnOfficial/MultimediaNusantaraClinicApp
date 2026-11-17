@@ -47,8 +47,8 @@ sealed class BottomNavItem(
     object Home : BottomNavItem(Screen.Home.route, "Home", Icons.Default.Home)
     object Activity : BottomNavItem(Screen.ActivityList.route, "Activity", Icons.Default.DateRange)
     object Hotline : BottomNavItem(Screen.Hotline.route, "Hotline", Icons.Default.Phone)
-    object Profile : BottomNavItem(Screen.Profile.route, "Profile", Icons.Default.Person)
-    object Settings : BottomNavItem(Screen.Settings.route, "Settings", Icons.Default.Settings)
+    object Profile : BottomNavItem(null, "Profile", Icons.Default.Person)
+    object Settings : BottomNavItem(null, "Settings", Icons.Default.Settings)
 }
 
 // Native Feature - Opens the phone app on user's phone. Not yet apply - UNUSED
