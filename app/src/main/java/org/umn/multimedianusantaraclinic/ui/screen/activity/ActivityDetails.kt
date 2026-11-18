@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.screen
+package org.umn.multimedianusantaraclinic.ui.screen.activity
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -32,18 +33,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.umn.multimedianusantaraclinic.data.defaultActivityDetail
 import org.umn.multimedianusantaraclinic.data.wheelchairRequestMock
-import org.umn.multimedianusantaraclinic.ui.component.ActivityCard
-import org.umn.multimedianusantaraclinic.ui.component.ActivityDetailHeader
 import org.umn.multimedianusantaraclinic.ui.component.BannerCard
-import org.umn.multimedianusantaraclinic.ui.component.DetailItem
-import org.umn.multimedianusantaraclinic.ui.component.ProductDetailList
-import org.umn.multimedianusantaraclinic.ui.component.ProductItem
-import org.umn.multimedianusantaraclinic.ui.component.ProfileCard
-import org.umn.multimedianusantaraclinic.ui.component.ProgressStep
-import org.umn.multimedianusantaraclinic.ui.component.ProgressTracker
-import org.umn.multimedianusantaraclinic.ui.component.TextDetailList
+import org.umn.multimedianusantaraclinic.ui.component.activity.ActivityCard
+import org.umn.multimedianusantaraclinic.ui.component.activity.ActivityDetailHeader
+import org.umn.multimedianusantaraclinic.ui.component.activity.DetailItem
+import org.umn.multimedianusantaraclinic.ui.component.activity.ProductDetailList
+import org.umn.multimedianusantaraclinic.ui.component.activity.ProductItem
+import org.umn.multimedianusantaraclinic.ui.component.activity.ActivityProfileCard
+import org.umn.multimedianusantaraclinic.ui.component.activity.ProgressStep
+import org.umn.multimedianusantaraclinic.ui.component.activity.ProgressTracker
+import org.umn.multimedianusantaraclinic.ui.component.activity.TextDetailList
 import org.umn.multimedianusantaraclinic.ui.theme.Green80
 import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
 import org.umn.multimedianusantaraclinic.ui.theme.Red
@@ -140,6 +140,7 @@ fun ActivityDetailsScreen(
                 ) {
                     OutlinedButton(onClick = {},
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                        shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp)
@@ -149,6 +150,7 @@ fun ActivityDetailsScreen(
                     Button(onClick = {},
                         colors = ButtonDefaults
                             .buttonColors(Red),
+                        shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp)
@@ -162,6 +164,7 @@ fun ActivityDetailsScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxSize()
+                // Intentionally separate (innerPadding -> Top & Bottom bar pushes)
                 .padding(innerPadding)
                 .verticalScroll(scrollState)
                 .padding(16.dp)
@@ -178,7 +181,7 @@ fun ActivityDetailsScreen(
                 modifier = Modifier,
                 backgroundColor = data.bannerBgColor
             )
-            ProfileCard(
+            ActivityProfileCard(
                 title = data.profileTitle,
                 name = data.profileName,
                 userId = data.profileId,

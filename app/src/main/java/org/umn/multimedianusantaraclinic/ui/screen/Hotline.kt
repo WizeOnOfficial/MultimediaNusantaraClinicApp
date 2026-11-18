@@ -21,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.umn.multimedianusantaraclinic.ui.theme.MultimediaNusantaraClinicTheme
 import org.umn.multimedianusantaraclinic.ui.theme.Red
 import org.umn.multimedianusantaraclinic.ui.theme.White
 
@@ -38,7 +40,7 @@ fun HotlineScreen() {
         Text(
             text = "Press and Hold to call Emergency Hotline",
             style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -57,5 +59,13 @@ fun HotlineScreen() {
                 modifier = Modifier.size(64.dp)
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HotlineScreenPreview() {
+    MultimediaNusantaraClinicTheme {
+        HotlineScreen()
     }
 }

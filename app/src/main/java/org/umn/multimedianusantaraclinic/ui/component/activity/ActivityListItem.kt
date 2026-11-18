@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.component
+package org.umn.multimedianusantaraclinic.ui.component.activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,12 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityItemData
-import org.umn.multimedianusantaraclinic.ui.screen.color
-import org.umn.multimedianusantaraclinic.ui.screen.displayText
-import org.umn.multimedianusantaraclinic.ui.theme.Black
+import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityItemData
+import org.umn.multimedianusantaraclinic.ui.screen.activity.color
+import org.umn.multimedianusantaraclinic.ui.screen.activity.displayText
 import org.umn.multimedianusantaraclinic.ui.theme.Gray
-import org.umn.multimedianusantaraclinic.ui.theme.White
 
 @Composable
 fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
@@ -89,7 +87,7 @@ fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
                             text = data.title,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.weight(1f)
                         )
 
@@ -120,7 +118,6 @@ fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
                         text = "${data.id} • ${data.subCategory}",
                         style = MaterialTheme.typography.labelMedium,
                         color = Gray,
-                        fontSize = 11.sp
                     )
                 }
             }
@@ -131,7 +128,7 @@ fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
             Text(
                 text = data.description,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -162,7 +159,6 @@ fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
                         text = "Last updated",
                         style = MaterialTheme.typography.labelSmall,
                         color = Gray,
-                        fontSize = 11.sp
                     )
                 }
 
@@ -171,7 +167,6 @@ fun ActivityListItem(data: ActivityItemData, onItemClick: (String) -> Unit) {
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 11.sp
                 )
             }
         }

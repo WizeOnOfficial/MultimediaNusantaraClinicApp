@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.component
+package org.umn.multimedianusantaraclinic.ui.component.activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

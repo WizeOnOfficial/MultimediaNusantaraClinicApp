@@ -1,12 +1,12 @@
 package org.umn.multimedianusantaraclinic.data
 
 import org.umn.multimedianusantaraclinic.R
-import org.umn.multimedianusantaraclinic.ui.component.DetailItem
-import org.umn.multimedianusantaraclinic.ui.component.ProductItem
-import org.umn.multimedianusantaraclinic.ui.component.ProgressStep
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailContent
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityDetailData
-import org.umn.multimedianusantaraclinic.ui.screen.ActivityStatus
+import org.umn.multimedianusantaraclinic.ui.component.activity.DetailItem
+import org.umn.multimedianusantaraclinic.ui.component.activity.ProductItem
+import org.umn.multimedianusantaraclinic.ui.component.activity.ProgressStep
+import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityDetailContent
+import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityDetailData
+import org.umn.multimedianusantaraclinic.ui.screen.activity.ActivityStatus
 import org.umn.multimedianusantaraclinic.ui.theme.Cyan40
 import org.umn.multimedianusantaraclinic.ui.theme.Green40
 import org.umn.multimedianusantaraclinic.ui.theme.Green80
