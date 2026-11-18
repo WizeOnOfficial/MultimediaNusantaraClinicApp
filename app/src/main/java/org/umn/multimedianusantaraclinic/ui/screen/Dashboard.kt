@@ -37,10 +37,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.umn.multimedianusantaraclinic.R
 import org.umn.multimedianusantaraclinic.Screen
 import org.umn.multimedianusantaraclinic.ui.component.dashboard.DashboardMenuItem
 import org.umn.multimedianusantaraclinic.ui.theme.Gray
@@ -50,19 +53,19 @@ import org.umn.multimedianusantaraclinic.ui.theme.White
 data class DashboardItemData(
     val id: String,
     val title: String,
-    val icon: ImageVector,
+    val icon: Int,
     val route: String? = null
 )
 
 val dashboardItems = listOf(
-    DashboardItemData("doctor", "Doctor", Icons.Default.MedicalServices, Screen.Hotline.route),
-    DashboardItemData("pharmacy", "Pharmacy", Icons.Default.LocalPharmacy, Screen.ActivityList.route),
-    DashboardItemData("ambulance", "Ambulance", Icons.Default.MedicalInformation, Screen.Hotline.route),
-    DashboardItemData("schedule", "Schedule", Icons.Default.Event, Screen.ActivityList.route),
-    DashboardItemData("records", "Records", Icons.Default.ReceiptLong, Screen.ActivityList.route),
-    DashboardItemData("lab", "Lab Test", Icons.Default.Science, Screen.ActivityList.route),
-    DashboardItemData("counseling", "Counseling", Icons.Default.Psychology, Screen.Hotline.route),
-    DashboardItemData("facility", "Facility", Icons.Default.LocalHospital, Screen.ActivityList.route)
+    DashboardItemData("wheelchair", "Wheelchair Request", R.drawable.wheelchair_icon, null),
+    DashboardItemData("medicine", "Medicine Request", R.drawable.medicine_request_icon, null),
+    DashboardItemData("misconduct", "Report Misconduct", R.drawable.report_misconduct_icon, null),
+    DashboardItemData("checkup", "Medical Checkup", R.drawable.medical_checkup_icon,null),
+    DashboardItemData("absence", "Class Absence", R.drawable.class_absence_icon, null),
+    DashboardItemData("service", "Medical Service", R.drawable.medical_service_request_icon, null),
+    DashboardItemData("tools", "Medical Tools", R.drawable.medical_tool_icon, null),
+    DashboardItemData("facility", "Facility", R.drawable.medical_tool_icon, null)
 )
 
 @Composable
@@ -148,6 +151,8 @@ fun DashboardScreen(
                                 rowItems.forEach { item ->
                                     DashboardMenuItem(
                                         data = item,
+                                        imagePainter = painterResource(item.icon),
+                                        contentDescription = null,
                                         onClick = {
                                             item.route?.let { targetRoute ->
                                                 onNavigateToRoute(targetRoute)
