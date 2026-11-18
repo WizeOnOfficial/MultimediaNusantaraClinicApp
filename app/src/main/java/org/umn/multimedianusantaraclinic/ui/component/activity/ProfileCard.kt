@@ -4,7 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+<<<<<<<< HEAD:app/src/main/java/org/umn/multimedianusantaraclinic/ui/component/activity/ProfileCard.kt
 import androidx.compose.foundation.layout.fillMaxHeight
+========
+>>>>>>>> 3d3ad3fe26c67611b69b4a4368694680d5890291:app/src/main/java/org/umn/multimedianusantaraclinic/ui/component/activity/ActivityProfileCard.kt
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,7 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProfileCard(
+fun ActivityProfileCard(
     title: String,
     name: String,
     userId: String,

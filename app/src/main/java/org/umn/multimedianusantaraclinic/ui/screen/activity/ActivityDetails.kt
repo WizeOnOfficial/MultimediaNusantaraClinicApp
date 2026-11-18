@@ -1,4 +1,4 @@
-package org.umn.multimedianusantaraclinic.ui.screen.activity
+package org.umn.multimedianusantaraclinic.ui.screen
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
@@ -181,7 +181,7 @@ fun ActivityDetailsScreen(
                 modifier = Modifier,
                 backgroundColor = data.bannerBgColor
             )
-            ProfileCard(
+            ActivityProfileCard(
                 title = data.profileTitle,
                 name = data.profileName,
                 userId = data.profileId,

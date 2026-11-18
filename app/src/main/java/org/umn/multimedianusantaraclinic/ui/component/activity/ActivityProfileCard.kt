@@ -1,0 +1,81 @@
+package org.umn.multimedianusantaraclinic.ui.component.activity
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+<<<<<<<< HEAD:app/src/main/java/org/umn/multimedianusantaraclinic/ui/component/activity/ProfileCard.kt
+import androidx.compose.foundation.layout.fillMaxHeight
+========
+>>>>>>>> 3d3ad3fe26c67611b69b4a4368694680d5890291:app/src/main/java/org/umn/multimedianusantaraclinic/ui/component/activity/ActivityProfileCard.kt
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun ActivityProfileCard(
+    title: String,
+    name: String,
+    userId: String,
+    imagePainter: Painter,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    painter = imagePainter,
+                    contentDescription = "Profile Picture of $name",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                )
+
+                Column(
+                    modifier = Modifier
+                        .height(48.dp),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Text(
+                        text = userId,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+            }
+        }
+    }
+}

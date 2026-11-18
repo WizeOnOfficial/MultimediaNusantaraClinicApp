@@ -10,14 +10,20 @@ import org.umn.multimedianusantaraclinic.ui.screen.HomeScreen
 
 @Composable
 fun RootNavigationGraph(navController: NavHostController) {
-    NavHost (
+    NavHost(
         navController = navController,
         startDestination = Graph.Auth.route,
-        route = Graph.Root.route,
+        route = Graph.Root.route
     ) {
         authNavigationGraph(navController = navController)
         composable(route = Graph.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                onLogout = {
+                    navController.navigate(Graph.Auth.route) {
+                        popUpTo(Graph.Root.route) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }
